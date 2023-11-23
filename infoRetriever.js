@@ -25,38 +25,51 @@ axios.get(url)
 
         console.log(util.inspect(result, { showHidden: false, depth: null }))
     })
+
     .catch(error => {
         console.error('an error occured while getting the html with axios:', error);
     });
 
 
 function headerAndDataToDict($, selector) {
-    let content = {}
+    let contents = {}
     $(selector).each(
         function (index, row) {
             // th elementを取得
             let header = $(row).text()
+
             // row == th elementの次要素$(row).next()であるtd elementを取得
             let data = $($(row).next()).text()
+
             // 整形
             shaped_header = header.replace(/[\n\t]/g, '')
             shaped_data = data.replace(/[\n\t]/g, '')
-            content[shaped_header] = shaped_data
+
+            contents[shaped_header] = shaped_data
         }
     );
-    return content
+    return contents
 }
 
 function propertyViewNoteToDic($) {
-    notes = []
+    contents = {}
     $('.property_view_note-info span').each(
         function (index, span) {
             // th elementを取得
-            let note = $(span).text()
+            let content = $(span).text()
+
             // 整形
-            // shaped_note = note.replace(/[\n\t]/g, '')
-            notes.push(note)
+            shaped_content = content.replace(/\s+/g, '')
+
+            // 辞書への変形
+            if (shaped_content.match(/:/)) {  // ':'でheaderとdataに分割する
+                keyValue = shaped_content.split(':')
+            } else { // 家賃のラベルはないのでつける
+                keyValue = ['家賃', shaped_content]
+            }
+
+            contents[keyValue[0]] = keyValue[1]
         }
     );
-    return notes
+    return contents
 }
