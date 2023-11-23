@@ -18,7 +18,8 @@ axios.get(url)
         const $ = cheerio.load(response.data);
 
         // 各要素からデータ取得
-        result["基本情報"] = propertyViewNoteToDic($)
+        result["物件名"] = $('h1').text()
+        result["基本情報"] = propertyViewNoteToDict($)
         result["ランディングテーブル"] = headerAndDataToDict($, '.property_view_table  th')
         result["部屋の特長・設備"] = headerAndDataToDict($, '#bkdt-option  li')
         result["物件概要"] = headerAndDataToDict($, '.data_table  th')
@@ -51,7 +52,7 @@ function headerAndDataToDict($, selector) {
     return contents
 }
 
-function propertyViewNoteToDic($) {
+function propertyViewNoteToDict($) {
     contents = {}
     $('.property_view_note-info span').each(
         function (index, span) {
