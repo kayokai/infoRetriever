@@ -3,6 +3,11 @@
 ```
 $ git clone https://github.com/shunnosuke-chinen/infoRetriever.git
 ```
+
+### 依存ライブラリのインストール
+```
+$ npm install axios cheerio
+```
 ### 実行
 ```js
 $ cd infoRetriever
