@@ -1,4 +1,9 @@
 # 使い方
+### ダウンロード
+```
+$ git clone https://github.com/shunnosuke-chinen/infoRetriever.git
+```
+### 実行
 ```js
 $ node ./infoRetriever.js
 ```
