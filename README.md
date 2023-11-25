@@ -5,6 +5,7 @@ $ git clone https://github.com/shunnosuke-chinen/infoRetriever.git
 ```
 ### 実行
 ```js
+$ cd infoRetriever
 $ node ./infoRetriever.js
 ```
 
