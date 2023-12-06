@@ -18,8 +18,8 @@ $ node ./infoRetriever.js
 ```
 .
 ├── README.md
-├── infoRetriever.js  ->  本体ファイル
-└── tables.js         ->  日本語と英語キーの対応関係定義テーブル
+├── infoRetriever.js         ->  本体ファイル
+└── ElementNamesForParse.js  ->  日本語と英語キーの対応関係定義テーブル
 ```
 
 # 出力例
