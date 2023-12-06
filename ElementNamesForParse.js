@@ -21,11 +21,12 @@ const TABLE_JA_TO_ENG = {
     // rent //
     // administration
     '管理費・共益費': 'common_service_fee',
-    '家賃': 'total_rent',
+    '賃料': 'total_rent',
     '礼金': 'key_money',
     '敷金': 'security_deposit',
     '敷引・償却': 'shikibiki',
     '保証金': 'deposit',
+    '仲介手数料': 'brokerageFee',
     // pubdate
     '契約期間': 'fixed_term',
     '駐車場': 'parking',
@@ -55,6 +56,7 @@ const TABLE_NON_EXISTED = {
     '取引態様': 'transaction_mode',
     '損保': 'property_insurance',
     '間取り詳細': 'detailed_layout',
+    '周辺情報': 'local_infomation'
 };
 
 // 部屋の特徴・設備の部分のテーブル
@@ -127,7 +129,7 @@ const TABLE_NON_EXISTED_FEATURES = {
 
 // 既存テーブルと追加テーブルをconcat
 const JA_TO_ENG = { ...TABLE_JA_TO_ENG, ...TABLE_NON_EXISTED };
-const FEATURES_AND_FACILITIES = { ...TABLE_FEATURES_AND_FACILITIES, ...TABLE_NON_EXISTED_FEATURES };
+const JA_TO_ENG_FEATURES_AND_FACILITIES = { ...TABLE_FEATURES_AND_FACILITIES, ...TABLE_NON_EXISTED_FEATURES };
 
 exports.JA_TO_ENG = JA_TO_ENG
-exports.FEATURES_AND_FACILITIES = FEATURES_AND_FACILITIES
+exports.JA_TO_ENG_FEATURES_AND_FACILITIES = JA_TO_ENG_FEATURES_AND_FACILITIES
