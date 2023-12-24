@@ -10,7 +10,7 @@ const DOES_USE_NEXT_CLASS_HOMES = { '物件名': false, '基本情報': true, '�
 /* 簡易テスト */
 async function main() {
     let list_keys_set = []
-    const list_test_url = ['https://www.homes.co.jp/chintai/b-1241880044510/'];
+    const list_test_url = ['https://www.homes.co.jp/chintai/b-1241880047927/'];
 
     const browser = await puppeteer.launch({headless: "new"});
 
@@ -67,6 +67,8 @@ async function parseHOMES(browser, url) {
 
 /**
  * 物件名を辞書形式で取得
+    *階数
+    *部屋番号
  * @param {*} $ 
  * @returns dict
  */
@@ -76,7 +78,11 @@ function getPropertyName($) {
 
 
     let selector = SELECTORS_HOMES['物件名'];
-    dictPropertyName[JA_TO_ENG['物件名']] = $(selector).text().replace(/\s+/g, '');
+    let [propertyName, floorAndRoom] = $(selector).text().split(' ');
+    let [floor, roomNumber] = floorAndRoom.split('/');
+    dictPropertyName[JA_TO_ENG['物件名']] = propertyName;
+    dictPropertyName[JA_TO_ENG['階']] = floor;
+    dictPropertyName[JA_TO_ENG['部屋番号']] = roomNumber;
 
     return dictPropertyName;
 }
@@ -123,11 +129,7 @@ function getFeaturesAndFacilities($) {
 
     $(SELECTORS_HOMES['特徴・設備']).each(
         function(index, row) {
-            if ($(row).text().includes('フリーレント')) {
-                features[index] = 'フリーレント';
-            } else {
             features[index] = $(row).text().replace('、', '');
-            }
         }
     )
     for (const feature_ja of features) {
