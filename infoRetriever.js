@@ -35,11 +35,9 @@ const DOES_USE_NEXT_CLASS_SUUMO_TYPE2 = { '物件名': false, '賃料': false, '
 
 /* 簡易テスト */
 async function main() {
-    let list_keys_set = []
-    const list_test_url = ['https://suumo.jp/chintai/bc_100355755056/', 'https://suumo.jp/chintai/jnc_000086387922/'];
+    const list_test_url = ['https://suumo.jp/chintai/bc_100355755056/'];
     for (test_url of list_test_url) {
         const result = await parseSUUMO(test_url);
-        list_keys_set.push(new Set(Object.keys(result)))
         console.log(util.inspect(result, { showHidden: false, depth: null }));
     }
 }
@@ -144,11 +142,12 @@ function getBasicInfo($) {
  * @returns dict
  */
 function getFeaturesAndFacilities($) {
-    // すべての初期費用候補を'0'で初期化  
+
     const LIST_SELECTORS_ALL = [SELECTORS_SUUMO_TYPE1, SELECTORS_SUUMO_TYPE2]
     let dictFeaturesAndFacilities = {};
 
     for (selectors_SUUMO_typex of LIST_SELECTORS_ALL) {
+        // すべての初期費用候補を'0'で初期化  
         for (const feature of Object.values(JA_TO_ENG_FEATURES_AND_FACILITIES)) {
             dictFeaturesAndFacilities[feature] = 0;
         }
@@ -156,6 +155,7 @@ function getFeaturesAndFacilities($) {
         // 初期費用を'1'に変更 
         let featuresAll = $(selectors_SUUMO_typex['特徴・設備']).text().split('、'); // @HACK
         for (const feature_ja of featuresAll) {
+            if (A_TO_ENG_FEATURES_AND_FACILITIES[feature_ja] == undefined) throw new Error('"' + feature_ja + '"' + ' is undefined feature.')
             dictFeaturesAndFacilities[JA_TO_ENG_FEATURES_AND_FACILITIES[feature_ja]] = 1;
         }
     }
@@ -217,7 +217,7 @@ function extractWithNextElement($, selector) {
 
 
             // 駅徒歩カラムはカラムを3分割   
-            if (shaped_title == '駅徒歩' || shaped_title == 'アクセス') {
+            if (['駅徒歩', 'アクセス', '交通'].includes(shaped_title)) {
                 stationAndDistances = shaped_data.split(/(?<=分)/g); // @HACK
 
                 for (let i = 0; i < 3; i++) {
@@ -250,7 +250,7 @@ function extractWithNextElement($, selector) {
 
 /**
  * titleとdataが別クラスに分けられていないとき，':'でtitleとdataに分ける(e.g. '敷金: 11.9万円')
- * 賃料に関してはad hockにtitleをつける
+ * 賃料に関してはad hocにtitleをつける
  * @param {*} $ 
  * @returns dict
  */
