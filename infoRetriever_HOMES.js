@@ -81,7 +81,7 @@ function getPropertyName($) {
     let propertyNameAndFloorAndRoom = $(selector).text()
     if ( propertyNameAndFloorAndRoom.includes('階/')) {
         //マンション又はアパート
-        let [propertyName, floorAndRoom] = $(selector).text().split(' ');
+        let [propertyName, floorAndRoom] = propertyNameAndFloorAndRoom.split(' ');
         let [floor, roomNumber] = floorAndRoom.split('/');
         dictPropertyName[JA_TO_ENG['物件名']] = propertyName;
         dictPropertyName[JA_TO_ENG['階']] = floor;
