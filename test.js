@@ -2,7 +2,7 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 const puppeteer = require('puppeteer');
 
-const SELECTORS_HOMES = { '物件名': 'h1 span.block', '基本情報': 'dl.w-full dt', '特徴・設備': 'ul.mt-3 div.grow.py-3 span', '物件概要': 'dl.-mx-px dt.flex' }
+const SELECTORS_HOMES = { '物件名': 'h1 span.block', '基本情報': '[data-detail--fixed-favorite-target] dl.w-full dt', '特徴・設備': 'ul.mt-3 div.grow.py-3 span', '物件概要': 'dl.-mx-px dt.flex' }
 const DOES_USE_NEXT_CLASS_HOMES = { '物件名': false, '基本情報': true, '特徴・設備': false, '物件概要': true }
 
 
@@ -20,7 +20,7 @@ async function main() {
 
 
     // 対象のURLを指定
-    const url = "https://www.homes.co.jp/chintai/b-1241880048975/";
+    const url = "https://www.homes.co.jp/chintai/b-1485860012125/";
 
     // ページを開く
     await page.goto(url, { waitUntil: 'networkidle2' });
@@ -32,7 +32,7 @@ async function main() {
     const $ = cheerio.load(html);
 
     // テキストを取得して出力
-    console.log($('dl.-mx-px dt.flex').text());
+    console.log($('[data-detail--fixed-favorite-target] dl.w-full dt').text());
     
 
     await browser.close();

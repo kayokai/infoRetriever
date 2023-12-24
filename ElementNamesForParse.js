@@ -108,7 +108,7 @@ const TABLE_FEATURES_AND_FACILITIES = {
     'ペット可':  'pet_friendly',
     '二人入居可': 'two_people_allowed',
     // office_use_allowed
-    // reform
+    'リフォーム物件': 'reform',
     // renovation
     // furnished
     // consumer_electronics
