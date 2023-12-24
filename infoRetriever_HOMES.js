@@ -3,14 +3,14 @@ const cheerio = require('cheerio');
 const util = require('util');
 const { JA_TO_ENG, JA_TO_ENG_FEATURES_AND_FACILITIES } = require('./ElementNamesForParse.js'); // 日本語カラム -> キー の変換テーブル読み込み    
 
-const SELECTORS_HOMES = { '物件名': 'h1 span.block', '基本情報': 'dl.w-full dt', '特徴・設備': 'ul.mt-3 div.grow.py-3 span', '物件概要': 'dl.-mx-px dt.flex' }
+const SELECTORS_HOMES = { '物件名': 'h1 span.block', '基本情報': '[data-detail--fixed-favorite-target] dl.w-full dt', '特徴・設備': 'ul.mt-3 div.grow.py-3 span', '物件概要': 'dl.-mx-px dt.flex' }
 const DOES_USE_NEXT_CLASS_HOMES = { '物件名': false, '基本情報': true, '特徴・設備': false, '物件概要': true }
 
 
 /* 簡易テスト */
 async function main() {
     let list_keys_set = []
-    const list_test_url = ['https://www.homes.co.jp/chintai/b-1241880044510/'];
+    const list_test_url = ['https://www.homes.co.jp/chintai/b-1485860012125/'];
 
     const browser = await puppeteer.launch({headless: "new"});
 
@@ -67,6 +67,8 @@ async function parseHOMES(browser, url) {
 
 /**
  * 物件名を辞書形式で取得
+    *階数
+    *部屋番号
  * @param {*} $ 
  * @returns dict
  */
@@ -76,7 +78,23 @@ function getPropertyName($) {
 
 
     let selector = SELECTORS_HOMES['物件名'];
-    dictPropertyName[JA_TO_ENG['物件名']] = $(selector).text().replace(/\s+/g, '');
+    let propertyNameAndFloorAndRoom = $(selector).text()
+    if ( propertyNameAndFloorAndRoom.includes('階/')) {
+        //マンション又はアパート
+        let [propertyName, floorAndRoom] = propertyNameAndFloorAndRoom.split(' ');
+        let [floor, roomNumber] = floorAndRoom.split('/');
+        dictPropertyName[JA_TO_ENG['物件名']] = propertyName;
+        dictPropertyName[JA_TO_ENG['階']] = floor;
+        dictPropertyName[JA_TO_ENG['部屋番号']] = roomNumber;
+    } else {    
+        //一戸建て
+        let [propertyName, floor, roomNumber] = [propertyNameAndFloorAndRoom, '-', '-'];
+        dictPropertyName[JA_TO_ENG['物件名']] = propertyName;
+        dictPropertyName[JA_TO_ENG['階']] = floor;
+        dictPropertyName[JA_TO_ENG['部屋番号']] = roomNumber;
+    }
+
+    
 
     return dictPropertyName;
 }
@@ -126,7 +144,7 @@ function getFeaturesAndFacilities($) {
             if ($(row).text().includes('フリーレント')) {
                 features[index] = 'フリーレント';
             } else {
-            features[index] = $(row).text().replace('、', '');
+                features[index] = $(row).text().replace('、', '');
             }
         }
     )

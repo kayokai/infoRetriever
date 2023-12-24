@@ -35,7 +35,7 @@ const TABLE_JA_TO_ENG = {
     '築年月': 'created_at',
     '情報更新日': 'updated_at',
     '物件名': 'building_name',
-    // room_number
+    '部屋番号': 'room_number',
     '現況': 'current_state',
     '入居': 'move_in_date',
     '入居可能時期': 'move_in_date',
@@ -108,7 +108,7 @@ const TABLE_FEATURES_AND_FACILITIES = {
     'ペット可':  'pet_friendly',
     '二人入居可': 'two_people_allowed',
     // office_use_allowed
-    // reform
+    'リフォーム物件': 'reform',
     // renovation
     // furnished
     // consumer_electronics
