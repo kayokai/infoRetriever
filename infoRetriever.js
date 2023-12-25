@@ -1,11 +1,12 @@
 // 参考   
 // https://www.tohoho-web.com/js/jquery/index.htm#selector  
-//console.log(util.inspect(parseSUUMO(url), { showHidden: false, depth: null }));   
+//console.log(util.inspect(parseHOMES(url), { showHidden: false, depth: null }));   
 
-const axios = require('axios');
+const puppeteer = require('puppeteer')
 const cheerio = require('cheerio');
 const util = require('util');
-const { JA_TO_ENG, JA_TO_ENG_FEATURES_AND_FACILITIES } = require('./ElementNamesForParse.js'); // 日本語カラム -> キー の変換テーブル読み込み    
+const { JA_TO_ENG, JA_TO_ENG_FEATURES_AND_FACILITIES } = require('./ElementNamesForParse.js'); // 日本語カラム -> キー の変換テーブル読み込み  
+const HOMES = require('./homes.js')
 
 
 /* 
@@ -35,11 +36,24 @@ const DOES_USE_NEXT_CLASS_SUUMO_TYPE2 = { '物件名': false, '賃料': false, '
 
 /* 簡易テスト */
 async function main() {
-    const list_test_url = ['https://suumo.jp/chintai/bc_100355755056/'];
+    let list_keys_set = []
+    const list_test_url = ['https://suumo.jp/chintai/bc_100355755056/', 'https://suumo.jp/chintai/jnc_000086387922/', 'https://www.homes.co.jp/chintai/b-1241880047927/'];
+
+    const browser = await puppeteer.launch({ headless: "new" });
+
     for (test_url of list_test_url) {
-        const result = await parseSUUMO(test_url);
+        if (test_url.includes('suumo.jp')) {
+            result = await parseSUUMO(browser, test_url);
+        } else if (test_url.includes('homes.co.jp')) {
+            result = await HOMES.parseHOMES(browser, test_url);
+        } else {
+            // 不明なURLが含まれている場合はエラーを投げる
+            throw new Error(`Unknown URL: ${test_url}`);
+        }
+        list_keys_set.push(new Set(Object.keys(result)));
         console.log(util.inspect(result, { showHidden: false, depth: null }));
     }
+    await browser.close();
 }
 
 if (require.main == module) {
@@ -49,13 +63,16 @@ if (require.main == module) {
 
 /**
  * メインのロジック関数
- * @param {*} url 
+ * @param {*} browser {*} url 
  * @returns 
  */
-async function parseSUUMO(url) {
+async function parseSUUMO(browser, url) {
     try {
-        const response = await axios.get(url);
-        const $ = cheerio.load(response.data);
+        const page = await browser.newPage();
+        await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
+        await page.goto(url, { waitUntil: 'domcontentloaded' });
+        const content = await page.content();
+        const $ = cheerio.load(content);
 
         // 物件名取得
         let propertyName = getPropertyName($);
@@ -75,6 +92,9 @@ async function parseSUUMO(url) {
         // 結果の結合    
         let result = { ...propertyName, ...rentAndInitialCosts, ...basicInfo, ...featuresAndFacilities, ...propertyDescription }
 
+        // puppeteerで開いたページを閉じる
+        await page.close();
+
         // 結果を返す    
         return result;
     } catch (error) {
@@ -82,6 +102,7 @@ async function parseSUUMO(url) {
         throw error;
     }
 }
+
 
 /**
  * 物件名を辞書形式で取得
@@ -142,12 +163,11 @@ function getBasicInfo($) {
  * @returns dict
  */
 function getFeaturesAndFacilities($) {
-
+    // すべての初期費用候補を'0'で初期化  
     const LIST_SELECTORS_ALL = [SELECTORS_SUUMO_TYPE1, SELECTORS_SUUMO_TYPE2]
     let dictFeaturesAndFacilities = {};
 
     for (selectors_SUUMO_typex of LIST_SELECTORS_ALL) {
-        // すべての初期費用候補を'0'で初期化  
         for (const feature of Object.values(JA_TO_ENG_FEATURES_AND_FACILITIES)) {
             dictFeaturesAndFacilities[feature] = 0;
         }
@@ -155,7 +175,6 @@ function getFeaturesAndFacilities($) {
         // 初期費用を'1'に変更 
         let featuresAll = $(selectors_SUUMO_typex['特徴・設備']).text().split('、'); // @HACK
         for (const feature_ja of featuresAll) {
-            if (A_TO_ENG_FEATURES_AND_FACILITIES[feature_ja] == undefined) throw new Error('"' + feature_ja + '"' + ' is undefined feature.')
             dictFeaturesAndFacilities[JA_TO_ENG_FEATURES_AND_FACILITIES[feature_ja]] = 1;
         }
     }
@@ -217,7 +236,7 @@ function extractWithNextElement($, selector) {
 
 
             // 駅徒歩カラムはカラムを3分割   
-            if (['駅徒歩', 'アクセス', '交通'].includes(shaped_title)) {
+            if (shaped_title == '駅徒歩' || shaped_title == 'アクセス') {
                 stationAndDistances = shaped_data.split(/(?<=分)/g); // @HACK
 
                 for (let i = 0; i < 3; i++) {
@@ -250,7 +269,7 @@ function extractWithNextElement($, selector) {
 
 /**
  * titleとdataが別クラスに分けられていないとき，':'でtitleとdataに分ける(e.g. '敷金: 11.9万円')
- * 賃料に関してはad hocにtitleをつける
+ * 賃料に関してはad hockにtitleをつける
  * @param {*} $ 
  * @returns dict
  */
