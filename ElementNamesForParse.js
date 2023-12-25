@@ -21,7 +21,7 @@ const TABLE_JA_TO_ENG = {
     '専有面積': 'occupied_area',
     // rent //
     '管理': 'administration',
-    '管理費・共益費': 'common_service_fee', 
+    '管理費・共益費': 'common_service_fee',
     '管理費等': 'common_service_fee',
     '賃料': 'total_rent',
     '礼金': 'key_money',
@@ -76,7 +76,7 @@ const TABLE_NON_EXISTED = {
 // key -> ('有', '無')
 const TABLE_FEATURES_AND_FACILITIES = {
     '照明付': 'lighting_surface',
-    '照明器具付き':'lighting_surface',
+    '照明器具付き': 'lighting_surface',
     // parking_two_cars
     '駐輪場': 'bicycle_parking',
     '駐輪場あり': 'bicycle_parking',
@@ -105,7 +105,7 @@ const TABLE_FEATURES_AND_FACILITIES = {
     'バルコニー': 'balcony',
     // designer
     'フローリング': 'wood_flooring',
-    'ペット可':  'pet_friendly',
+    'ペット可': 'pet_friendly',
     '二人入居可': 'two_people_allowed',
     // office_use_allowed
     'リフォーム物件': 'reform',
@@ -172,8 +172,9 @@ const TABLE_NON_EXISTED_FEATURES = {
     'インターネット対応': 'internet',
     '室内洗濯物干し': 'indoor_drying',
     '洗濯機置き場あり': 'laundry_space',
-    'ルーフバルコニー': 'roof_balcony'
-    
+    'ルーフバルコニー': 'roof_balcony',
+    'TVインターホン': 'TV_intercom'
+
 };
 
 // 既存テーブルと追加テーブルをconcat
