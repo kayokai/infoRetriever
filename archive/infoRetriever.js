@@ -155,7 +155,7 @@ function getFeaturesAndFacilities($) {
         // 初期費用を'1'に変更 
         let featuresAll = $(selectors_SUUMO_typex['特徴・設備']).text().split('、'); // @HACK
         for (const feature_ja of featuresAll) {
-            if (A_TO_ENG_FEATURES_AND_FACILITIES[feature_ja] == undefined) throw new Error('"' + feature_ja + '"' + ' is undefined feature.')
+            if (JA_TO_ENG_FEATURES_AND_FACILITIES[feature_ja] == undefined) throw new Error('"' + feature_ja + '"' + ' is undefined feature.')
             dictFeaturesAndFacilities[JA_TO_ENG_FEATURES_AND_FACILITIES[feature_ja]] = 1;
         }
     }
