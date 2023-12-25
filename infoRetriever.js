@@ -115,7 +115,7 @@ function getPropertyName($) {
 
     for (selectors_SUUMO of LIST_SELECTORS_ALL) {
         let selector = selectors_SUUMO['物件名'];
-        dictPropertyName[JA_TO_ENG['物件名']] = $(selector).text().replace(/[\n\t\s- (株)ROOTSが提供する賃貸物件情報]/g, '');
+        dictPropertyName[JA_TO_ENG['物件名']] = $(selector).text().replace(/[\n\t\s-(株)ROOTSが提供する賃貸物件情報の賃貸物件情報]/g, '');
     };
     return dictPropertyName;
 }
