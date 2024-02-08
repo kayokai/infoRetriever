@@ -37,7 +37,7 @@ const DOES_USE_NEXT_CLASS_SUUMO_TYPE2 = { '物件名': false, '賃料': false, '
 /* 簡易テスト */
 async function main() {
     let list_keys_set = []
-    const list_test_url = ['https://suumo.jp/chintai/bc_100355755056/', 'https://suumo.jp/chintai/jnc_000086387922/', 'https://www.homes.co.jp/chintai/b-1241880047927/'];
+    const list_test_url = ['https://suumo.jp/chintai/bc_100355755056/', 'https://suumo.jp/chintai/jnc_000086387922/', 'https://suumo.jp/chintai/bc_100364880038/'];
 
     const browser = await puppeteer.launch({ headless: "new" });
 
@@ -115,10 +115,12 @@ function getPropertyName($) {
 
     for (selectors_SUUMO of LIST_SELECTORS_ALL) {
         let selector = selectors_SUUMO['物件名'];
-        dictPropertyName[JA_TO_ENG['物件名']] = $(selector).text().replace(/[\n\t\s-(株)ROOTSが提供する賃貸物件情報の賃貸物件情報]/g, '');
+        dictPropertyName[JA_TO_ENG['物件名']] = $(selector).text().replaceAll(/\t|\n|\s|- \(株\).*|の賃貸物件情報/g, '');
     };
     return dictPropertyName;
 }
+
+
 
 /**
  * 賃料と初期費用を辞書形式で取得
