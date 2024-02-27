@@ -219,6 +219,7 @@ const TABLE_JA_TO_ENG = {
     'シャワー付洗面化粧台': 'washstand_with_shower',
     'シャワー付洗面台': 'washstand_with_shower', //canary
     '複層ガラス・複層サッシ': 'double_glazing',
+    'ペアガラス': 'double_glazing', //canary
     'セキュリティ会社加入済': 'security',
     '防犯（雨戸）シャッター': 'shutter',
     'シャッター雨戸': 'shutter', //athome
@@ -255,10 +256,12 @@ const TABLE_JA_TO_ENG = {
     'ペット相談': 'pet_consultation', //canary
     '脱衣所': 'dressing_room', //canary
     'グリル付': 'grill', //canary
+    'グリル': 'grill', //athome
     '収納3ヵ所': 'three_storage', //canary
     '振分': 'furiwake', //canary
     '浴室に窓': 'window_in_bathroom', //canary
     'ウォークインクロゼット': 'walkin_closet', //canary
+    'ウォークインクローゼット': 'walkin_closet', //athome
     '床下収納': 'underfloor_storage', //canary
     '収納1間半': '1.5_ken_storage', //canary
     '最上階': 'top_floor', //canary
@@ -283,7 +286,6 @@ const TABLE_JA_TO_ENG = {
     'メゾネット': 'maisonette', //canary
     'エアコン全室': 'all_rooms_air_conditiner', //canary
     '収納1間': '1_ken_storage', //canary
-    'ペアガラス': 'double_glazing', //canary
     'テラス': 'terrace', //canary
     '24時間緊急通報システム': 'always_emergency_call_system', //canary
     '外壁タイル張り': 'exterior_wall_tiling', //canary
@@ -318,7 +320,9 @@ const TABLE_JA_TO_ENG = {
     '初期費用カード決済可': 'initial_fee_card_payment', //canary
     'トランクルーム': 'trunk_room', //canary
     'ルームシェア不可': 'no_room_share', //canary
-    '二人入居不可': 'no_two_people' //canary
+    '二人入居不可': 'no_two_people', //canary
+    '浴室暖房': 'bathroom_heating', //athome
+    '防犯用ガラス': 'security_glass', //athome
   };
   
   // 既存テーブルと追加テーブルをconcat

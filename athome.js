@@ -10,7 +10,7 @@ const DOES_USE_NEXT_CLASS_ATHOME = { '物件名': false, '基本情報': true, '
 /* 簡易テスト */
 async function main() {
     let list_keys_set = []
-    const list_test_url = ['https://www.athome.co.jp/chintai/1027048290/'];
+    const list_test_url = ['https://www.athome.co.jp/chintai/1092326878/'];
     //const browser = await puppeteer.launch({headless: 'new'});
 
     for (test_url of list_test_url) {
@@ -34,6 +34,7 @@ if (require.main == module) {
 async function parseATHOME(url) {
     try {
         const browser = await puppeteer.launch({headless: 'new'});
+        //const browser = await puppeteer.launch({headless: false});
         const page = await browser.newPage();
         await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
         await page.goto(url, { waitUntil: 'domcontentloaded' });
@@ -41,7 +42,7 @@ async function parseATHOME(url) {
         const content = await page.content();
         const $ = cheerio.load(content);
 
-        // 認証ページ又は削除済みのページの場合にエラーを返す
+        // 削除済みのページの場合にエラーを返す
         pageAnalyse($);
 
         // 掲載物件名取得
@@ -75,7 +76,6 @@ async function parseATHOME(url) {
 
 function pageAnalyse($) {
     if ($('#error-header .heading').text() == 'お探しのページが見つかりません') throw 'お探しのページが見つかりません';
-    else if ($('body .container .center h2').text() == '認証にご協力ください。') throw '認証ページに飛ばされました。時間を空けてください。';
 }
 
 /**
@@ -87,7 +87,9 @@ function getPropertyName($) {
     //const LIST_SELECTORS_ALL = [SELECTORS_ATHOME]
     let dictPropertyName = {};
     let selector = SELECTORS_ATHOME['物件名'];
-    dictPropertyName[JA_TO_ENG['掲載物件名']] = $(selector).text();
+    let buildingName = $(selector).text();
+    dictPropertyName[JA_TO_ENG['掲載物件名']] = buildingName;
+    dictPropertyName[JA_TO_ENG['物件名']] = buildingName;
     
     return dictPropertyName;
 }
@@ -227,8 +229,7 @@ function extractWithNextElement($, selector) {
                 contents[JA_TO_ENG['保証金']] = shaped_data.split('/')[1];
             }
             else if (shaped_title == '建物名・部屋番号') {
-                contents[JA_TO_ENG['物件名']] = shaped_data.split(' ')[0];
-                if (shaped_data.split(' ')[1]) contents[JA_TO_ENG['部屋番号']] = shaped_data.split(' ')[1];
+                if (/^[０-９0-9]+$/.test(shaped_data)) contents[JA_TO_ENG['部屋番号']] = shaped_data;
             }
             else {
                 if (JA_TO_ENG[shaped_title] == undefined) JA_TO_ENG[shaped_title] = "ヘッダーなし" + shaped_title;

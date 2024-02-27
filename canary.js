@@ -37,7 +37,6 @@ async function parseCANARY(url) {
         const page = await browser.newPage();
         await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
         await page.goto(url, { waitUntil: 'domcontentloaded' });
-        //await page.waitForSelector('.bukkenOverviewInfo');
         const content = await page.content();
         const $ = cheerio.load(content);
 
@@ -76,7 +75,9 @@ async function parseCANARY(url) {
 function getPropertyName($) {
     let dictPropertyName = {};
     let selector = SELECTORS_CANARY['物件名'];
-    dictPropertyName[JA_TO_ENG['掲載物件名']] = $(selector).text().replace('の賃貸物件情報', '');
+    let buildingName = $(selector).text().replace('の賃貸物件情報', '');
+    dictPropertyName[JA_TO_ENG['掲載物件名']] = buildingName;
+    dictPropertyName[JA_TO_ENG['物件名']] = buildingName;
     
     return dictPropertyName;
 }
