@@ -77,7 +77,7 @@ function getPropertyName($) {
     let selector = SELECTORS_CANARY['物件名'];
     let buildingName = $(selector).text().replace('の賃貸物件情報', '');
     dictPropertyName[JA_TO_ENG['掲載物件名']] = buildingName;
-    dictPropertyName[JA_TO_ENG['物件名']] = buildingName;
+    dictPropertyName[JA_TO_ENG['物件名']] = buildingName.replace(/\（.*駅\）/, '');
     
     return dictPropertyName;
 }

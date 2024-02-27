@@ -15,8 +15,9 @@ async function main() {
 
     for (test_url of list_test_url) {
         const result = await parseATHOME(test_url);
-        list_keys_set.push(new Set(Object.keys(result)));
-        console.log(util.inspect(result, { showHidden: false, depth: null }));
+        console.log(result);
+        //list_keys_set.push(new Set(Object.keys(result)));
+        //console.log(util.inspect(result, { showHidden: false, depth: null }));
     }
     //await browser.close();
 }
@@ -38,12 +39,18 @@ async function parseATHOME(url) {
         const page = await browser.newPage();
         await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
         await page.goto(url, { waitUntil: 'domcontentloaded' });
-        //await page.waitForSelector('.bukkenOverviewInfo');
-        const content = await page.content();
+        await page.waitForSelector('.bukkenOverviewInfo');
+        //const content = await page.content();
         const $ = cheerio.load(content);
 
         // 削除済みのページの場合にエラーを返す
         pageAnalyse($);
+
+        // 認証ページに飛ばされたらfalseを返す
+        if ($('body .container .center h2').text() == '認証にご協力ください。') {
+            await browser.close();
+            return false;
+        }
 
         // 掲載物件名取得
         let propertyName = getPropertyName($);
@@ -74,6 +81,11 @@ async function parseATHOME(url) {
     }
 }
 
+/**
+ * 指定されたページが削除済みの場合エラーを投げる
+ * @param {*} $
+ * @returns
+ */
 function pageAnalyse($) {
     if ($('#error-header .heading').text() == 'お探しのページが見つかりません') throw 'お探しのページが見つかりません';
 }
